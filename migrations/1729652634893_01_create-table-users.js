@@ -1,6 +1,7 @@
 /**
  * @type {import('node-pg-migrate').ColumnDefinitions | undefined}
  */
+exports.shorthands = undefined;
 
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
@@ -8,29 +9,21 @@
  * @returns {Promise<void> | void}
  */
 exports.up = (pgm) => {
-    pgm.createTable('songs', {
+    pgm.createTable('users', {
         id: {
-            type: 'VARCHAR(20)',
+            type: 'VARCHAR(30)',
             primaryKey: true
         },
-        title: {
-            type: "TEXT",
+        username: {
+            type: 'VARCHAR(25)',
             notNull: true
         },
-        year: {
-            type: 'INTEGER',
+        password: {
+            type: 'VARCHAR(100)',
             notNull: true
         },
-        performer: {
-            type: 'TEXT',
-            notNull: true
-        },
-        genre: {
-            type: 'TEXT',
-            notNull: true
-        },
-        duration: {
-            type: 'INTEGER',
+        fullname: {
+            type: 'VARCHAR(70)',
             notNull: true
         },
         created_at: {
@@ -42,7 +35,6 @@ exports.up = (pgm) => {
             notNull: true,
         },
     })
-
 };
 
 /**
@@ -51,5 +43,5 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
-    pgm.dropTable('songs')
+    pgm.dropTable('users')
 };
