@@ -1,4 +1,4 @@
-/* eslint-disable require-jsdoc */
+
 const {Pool} = require('pg');
 const InvariantError = require('../exceptions/InvariantError');
 

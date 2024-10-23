@@ -29,7 +29,6 @@ class ActivitiesService {
 
     async getActivities(playlistId) {
 
-
         const query = {
             text: `SELECT u.username AS username, s.title AS title, ac.action, ac.time
             FROM playlist_song_activities ac
@@ -44,7 +43,6 @@ class ActivitiesService {
         if (!result.rowCount) {
             throw new NotFoundError('Gagal menampilkan aktivitas. Id playlist tidak ditemukan')
         }
-
 
         return result.rows
     }

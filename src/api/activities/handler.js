@@ -13,7 +13,7 @@ class ActivitiesHandler {
         const { playlistId } = request.params
         const { id: userId } = request.auth.credentials
 
-        this._playlistsService.verifyPlaylistAccess(playlistId, userId)
+        await this._playlistsService.verifyPlaylistAccess(playlistId, userId)
         const activities = await this._service.getActivities(playlistId)
 
         return {

@@ -35,11 +35,6 @@ class PlaylistsService {
             JOIN users on playlists.owner = users.id
             WHERE playlists.owner = $1`,
             values: [owner]
-            // text: `SELECT playlists.id, playlists.name, users.username FROM playlists
-            // JOIN users on playlists.owner = users.id
-            // LEFT JOIN collaborations on collaborations.playlist_id = playlists.id 
-            // WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
-            // values: [owner]
         };
         
         const result = await this._pool.query(query);
@@ -66,11 +61,13 @@ class PlaylistsService {
         };
 
         const result = await this._pool.query(query);
+
         if (!result.rowCount) {
             throw new NotFoundError('Playlist tidak ditemukan');
         }
 
         const playlist = result.rows[0];
+        
         if (playlist.owner !== owner) {
             throw new AuthorizationError('Anda tidak berhak mengakses playlist ini');
         }
