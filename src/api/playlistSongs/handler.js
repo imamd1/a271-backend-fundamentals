@@ -1,9 +1,10 @@
 const NotFoundError = require('../../exceptions/NotFoundError')
 const autoBind = require('auto-bind')
 class PlaylistSongsHandler {
-  constructor(service, playlistsService, validator) {
+  constructor(service, playlistsService, activitiesService, validator) {
     this._service = service
     this._playlistsService = playlistsService
+    this._activitiesService = activitiesService
     this._validator = validator
 
     autoBind(this)
@@ -16,11 +17,14 @@ class PlaylistSongsHandler {
     }
     this._validator.validatePlaylistSongPayload(request.payload)
     const { songId } = request.payload
+    const action = 'add'
+    await this._service.verifySong(songId)
     await this._playlistsService.verifyPlaylistAccess(playlistId, userId)
     const playlistsongId = await this._service.addSongPlaylist(
       playlistId,
       songId,
     )
+    await this._activitiesService.addActivity(playlistId, songId, userId, action)
 
     const response = h.response({
       status: 'success',
@@ -56,8 +60,10 @@ class PlaylistSongsHandler {
     }
     this._validator.validatePlaylistSongPayload(request.payload)
     const { songId } = request.payload
+    const action = 'delete'
     await this._playlistsService.verifyPlaylistAccess(playlistId, userId)
-    await this._service.deletePlaylistSongs(playlistId, songId)
+    await this._activitiesService.addActivity(playlistId, songId, userId, action)
+    await this._service.deletePlaylistSong(playlistId, songId)
 
     return {
       status: 'success',

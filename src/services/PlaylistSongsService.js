@@ -26,14 +26,14 @@ class PlaylistSongsService {
 
   async getPlaylistSongs(playlistId) {
     const query = {
-      text: `SELECT p.id, p.name, u.fullname as username
+      text: `SELECT p.id, p.name, u.username as username
                     FROM playlists p
                     JOIN users u ON p.owner = u.id
                     WHERE p.id = $1`,
       values: [playlistId],
     }
 
-    const playlistResult = await this._pool.query(query)
+    const playlistResult = await this._pool.query(query)  
 
 
     if (!playlistResult.rowCount) {
@@ -75,6 +75,19 @@ class PlaylistSongsService {
     const result = await this._pool.query(query)
     if (!result.rowCount) {
       throw new InvariantError('Gagal menghapus lagu dari Playlist')
+    }
+  }
+
+  async verifySong(songId) {
+    const query = {
+      text: `SELECT id FROM songs WHERE id = $1`,
+      values: [songId]
+    }
+
+    const result = await this._pool.query(query)
+
+    if(!result.rowCount) {
+      throw new NotFoundError('Lagu tidak ditemukan')
     }
   }
 }
