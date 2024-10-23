@@ -68,7 +68,7 @@ class AlbumsService {
         const result = await this._pool.query(query)
 
         if(!result.rowCount) {
-            throw new InvariantError("Gagal mengubah album")
+            throw new NotFoundError('Gagal mengubah Album. Id tidak ditemukan')
         }
     }
 
