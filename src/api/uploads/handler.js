@@ -22,10 +22,9 @@ class UploadsHandler {
     this._validator.validateImageHeaders(cover.hapi.headers);
 
     const filename = await this._storageService.writeFile(cover, cover.hapi);
-    console.log(id)
     // insert into database
     const coverUrl = `http://${process.env.HOST}:${process.env.PORT}/uploads/images/${filename}`;
-    console.log(coverUrl)
+  
     await this._albumsService.editCoverAlbumById(id, coverUrl);
 
 
