@@ -1,4 +1,4 @@
 node_modules/
 .env
 *.zip
-src/uploads/file/images/*
+src/api/uploads/file/images/*

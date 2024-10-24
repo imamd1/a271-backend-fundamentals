@@ -48,7 +48,7 @@ exports.up = (pgm) => {
  */
 exports.down = (pgm) => {
     pgm.dropTable('collaborations')
-    pgm.dropConstraint('collaborations.playlist_id_to_playlists.id')
-    pgm.dropConstraint('collaborations.user_id_to_users.id')
+    pgm.dropConstraint('collaborations','collaborations.playlist_id_to_playlists.id')
+    pgm.dropConstraint('collaborations','collaborations.user_id_to_users.id')
 
 };

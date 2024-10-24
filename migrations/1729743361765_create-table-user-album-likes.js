@@ -45,6 +45,6 @@ exports.up = (pgm) => {
  */
 exports.down = (pgm) => {
     pgm.dropTable('user_album_likes')
-    pgm.dropConstraint('user_album_likes.album_id_to_albums.id')
-    pgm.dropConstraint('user_album_likes.user_id_to_users.id')
+    pgm.dropConstraint('user_album_likes','user_album_likes.album_id_to_albums.id')
+    pgm.dropConstraint('user_album_likes','user_album_likes.user_id_to_users.id')
 };
