@@ -2,6 +2,8 @@ require('dotenv').config()
 
 const Hapi = require('@hapi/hapi')
 const Jwt = require('@hapi/jwt')
+const path = require('path')
+const Inert = require('@hapi/inert')
 
 const ClientError = require('./exceptions/ClientError')
 const songs = require('./api/songs')
@@ -37,15 +39,35 @@ const activities = require('./api/activities')
 const ActivitiesService = require('./services/ActivitiesService')
 const ActivitiesValidator = require('./validators/activities')
 
+const _exports = require('./api/exports')
+const ExportPlaylistsService = require('./services/ExportPlaylistsService')
+const ExportPlaylistValidator = require('./validators/exports')
+
+const uploads = require('./api/uploads')
+const StorageService = require('./services/StorageService')
+const UploadsValidator = require('./validators/uploads')
+
+const albumLikes = require('./api/albumLikes')
+const AlbumLikesService = require('./services/AlbumLikesService')
+const AlbumLikeValidator = require('./validators/albumLikes')
+
+const CacheService = require('./services/CacheService')
+
 const init = async () => {
+  const cacheService = new CacheService()
   const songService = new SongsService()
-  const albumService = new AlbumsService()
+  const albumsService = new AlbumsService()
   const usersService = new UsersService()
   const authenticationsService = new AuthenticationsService()
   const playlistsService = new PlaylistsService()
   const playlistSongsService = new PlaylistSongsService()
   const collaborationsService = new CollaborationsService()
   const activitiesService = new ActivitiesService()
+  const storageService = new StorageService(
+    path.resolve(__dirname, 'api/uploads/file/images'),
+  )
+  const albumLikesService = new AlbumLikesService(cacheService)
+  
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -61,6 +83,7 @@ const init = async () => {
     {
       plugin: Jwt,
     },
+    { plugin: Inert },
   ])
 
   server.auth.strategy('songsapp_jwt', 'jwt', {
@@ -90,7 +113,7 @@ const init = async () => {
     {
       plugin: albums,
       options: {
-        service: albumService,
+        service: albumsService,
         validator: AlbumsValidator,
       },
     },
@@ -131,15 +154,38 @@ const init = async () => {
       options: {
         collaborationsService,
         playlistsService,
-        validator: CollaborationsValidator
-      }
+        usersService,
+        validator: CollaborationsValidator,
+      },
     },
     {
       plugin: activities,
       options: {
         activitiesService,
         playlistsService,
-        validator: ActivitiesValidator
+        validator: ActivitiesValidator,
+      },
+    },
+    {
+      plugin: _exports,
+      options: {
+        service: ExportPlaylistsService,
+        validator: ExportPlaylistValidator,
+      },
+    },
+    {
+      plugin: uploads,
+      options: {
+        storageService,
+        albumsService,
+        validator: UploadsValidator,
+      },
+    },
+    {
+      plugin: albumLikes,
+      options: {
+        service: albumLikesService,
+        validator: AlbumLikeValidator
       }
     }
   ])
@@ -147,6 +193,7 @@ const init = async () => {
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan konteks response dari request
     const { response } = request
+    // console.log(response)
     if (response instanceof Error) {
       // penanganan client error secara internal.
       if (response instanceof ClientError) {

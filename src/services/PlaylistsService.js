@@ -31,14 +31,17 @@ class PlaylistsService {
 
     async getPlaylists(owner) {
         const query = {            
-            text: `SELECT playlists.id, playlists.name, users.username FROM playlists
-            JOIN users on playlists.owner = users.id
-            WHERE playlists.owner = $1`,
+            text: `SELECT p.id, p.name, u.username
+            FROM playlists p
+            LEFT JOIN users u ON p.owner = u.id
+            LEFT JOIN collaborations c ON c.playlist_id = p.id
+            WHERE p.owner = $1 OR c.user_id = $1`,
             values: [owner]
         };
-        
+    
         const result = await this._pool.query(query);
         return result.rows;
+        // console.log(result)
     }
 
     async deletePlaylistById(playlistId) {
@@ -56,11 +59,11 @@ class PlaylistsService {
 
     async verifyPlaylistOwner(playlistId, owner) {
         const query = {
-            text: 'SELECT owner FROM playlists WHERE id = $1',
+            text: 'SELECT * FROM playlists WHERE id = $1',
             values: [playlistId],
         };
 
-        const result = await this._pool.query(query);
+        const result = await this._pool.query(query);  
 
         if (!result.rowCount) {
             throw new NotFoundError('Playlist tidak ditemukan');
