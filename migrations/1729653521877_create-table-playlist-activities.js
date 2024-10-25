@@ -67,8 +67,8 @@ exports.up = (pgm) => {
  */
 exports.down = (pgm) => {
     pgm.dropTable('playlist_song_activities')
-    pgm.dropConstraint('playlist_song_activities.playlist_id_to_playlists.id')
-    pgm.dropConstraint('playlist_song_activities.song_id_to_songs.id')
-    pgm.dropConstraint('playlist_song_activities.user_id_to_users.id')
+    pgm.dropConstraint('playlist_song_activities','playlist_song_activities.playlist_id_to_playlists.id')
+    pgm.dropConstraint('playlist_song_activities','playlist_song_activities.song_id_to_songs.id')
+    pgm.dropConstraint('playlist_song_activities','playlist_song_activities.user_id_to_users.id')
 
 };
