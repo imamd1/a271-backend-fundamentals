@@ -11,6 +11,7 @@ class UploadsHandler {
   async postUploadCoverImageHandler(request, h) {
     const { id } = request.params;
     const { cover } = request.payload;
+
     if (!cover || !cover.hapi) {
       const response = h.response({
         status: 'fail',

@@ -1,11 +1,11 @@
 const autoBind = require('auto-bind')
 
 class AlbumLikesHandler {
-  constructor(service, albumsService, cacheService, validator) {
+  constructor(service, albumsService, validator) {
     this._service = service
     this._albumsService = albumsService
     this._validator = validator
-    this._cacheService = cacheService
+
 
     autoBind(this)
   }
